@@ -18,7 +18,7 @@
         ['key' => 'S', 'icon' => 'lotus', 'title' => 'Spiritual', 'text' => 'Doa bersama, ritus, dan nilai keselarasan.'],
         ['key' => 'T', 'icon' => 'drum', 'title' => 'Tradisi', 'text' => 'Langkah turun-temurun yang tetap hidup di kota ini.'],
         ['key' => 'H', 'icon' => 'hands', 'title' => 'Harmoni', 'text' => 'Persaudaraan lintas komunitas dalam satu perayaan.'],
-        ['key' => 'K', 'icon' => 'island', 'title' => 'Kepri Maju', 'text' => 'Semangat bersama untuk Batam dan Kepulauan Riau.'],
+        ['key' => 'K', 'icon' => 'island', 'title' => 'Kepri Maju', 'text' => 'Semangat Mengembangkan dan melestarikan Budaya Tradisi Nusantara yang Harmonis di Kepulauan Riau.'],
     ];
 
     $countdown = [
@@ -1802,11 +1802,11 @@
                             </div>
                             <div class="meta-chip">
                                 <span class="mark">2</span>
-                                <div><strong>Lokasi</strong><span>Nagoya - Batu Aji, Batam</span></div>
+                                <div><strong>Lokasi</strong><span>Batam - Kepulauan Riau</span></div>
                             </div>
                             <div class="meta-chip">
                                 <span class="mark">3</span>
-                                <div><strong>Tema</strong><span>Warisan, Kebersamaan &amp; Doa</span></div>
+                                <div><strong>Tema</strong><span>Pawai Tatung dan Budaya Nasional serta Malam Festival Mooncake</span></div>
                             </div>
                         </div>
                     </div>
