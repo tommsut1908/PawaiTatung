@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PendaftaranPanitiaController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,9 +20,3 @@ Route::get('/', function () {
 Route::get('/pendaftaran/tatung', function () {
     return view('register-tatung');
 })->name('pendaftaran.tatung');
-
-Route::get('/pendaftaran/panitia', function () {
-    return view('register-panitia');
-})->name('pendaftaran.panitia');
-
-Route::post('/pendaftaran/panitia', [PendaftaranPanitiaController::class, 'store'])->name('pendaftaran.panitia.submit');

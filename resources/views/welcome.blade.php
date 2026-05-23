@@ -6,9 +6,8 @@
     $navLinks = [
         ['label' => 'Beranda', 'href' => '#beranda'],
         ['label' => 'Tentang', 'href' => '#tentang'],
-        // ['label' => 'Rangkaian Acara', 'href' => '#acara'],
+        ['label' => 'Rangkaian Acara', 'href' => '#acara'],
         ['label' => 'Pendaftaran', 'href' => '#daftar'],
-        ['label' => 'Panitia', 'href' => '#panitia'],
         ['label' => 'Galeri', 'href' => '#galeri'],
         ['label' => 'Sponsor', 'href' => '#sponsor'],
         ['label' => 'Kontak', 'href' => '#kontak'],
@@ -48,7 +47,7 @@
         [
             'title' => 'Atraksi Budaya',
             'text' => 'Perpaduan seni, gerak, dan kostum yang memikat mata.',
-            'image' => asset('images/registration-panitia.png'),
+            'image' => asset('images/about-tatung.png'),
         ],
         [
             'title' => 'Doa Bersama',
@@ -71,14 +70,6 @@
             'points' => ['Syarat & Ketentuan', 'Formulir Pendaftaran', 'Informasi Teknis', 'Kontak Panitia'],
             'button' => 'Daftar sebagai Tatung',
         ],
-        [
-            'accent' => 'blue',
-            'title' => 'Pendaftaran Panitia & Relawan',
-            'text' => 'Bergabung untuk mendukung kelancaran acara, alur peserta, dan logistik panggung.',
-            'image' => asset('images/registration-panitia.png'),
-            'points' => ['Syarat & Ketentuan', 'Formulir Pendaftaran', 'Informasi Teknis', 'Kontak Panitia'],
-            'button' => 'Daftar sebagai Panitia',
-        ],
     ];
 
     $schedule = [
@@ -95,9 +86,9 @@
         asset('images/hero-banner.png'),
         asset('images/about-tatung.png'),
         asset('images/registration-tatung.png'),
-        asset('images/registration-panitia.png'),
         asset('images/contact-bridge.png'),
         asset('images/hero-banner.png'),
+        asset('images/about-tatung.png'),
     ];
 
     $sponsors = ['Logo Sponsor', 'Logo Sponsor', 'Logo Sponsor', 'Logo Sponsor', 'Logo Sponsor', 'Logo Sponsor'];
@@ -1114,7 +1105,7 @@
 
         .register-grid {
             display: grid;
-            grid-template-columns: repeat(2, minmax(0, 1fr));
+            grid-template-columns: 1fr;
             gap: 1rem;
         }
 
@@ -1741,7 +1732,7 @@
             <h2 class="modal-title" id="welcomeModalTitle">Selamat Datang di<br>Pawai Tatung Batam</h2>
             <p class="modal-lead">Jadilah bagian dari tradisi dan budaya yang penuh makna.</p>
             <div class="modal-separator" aria-hidden="true">❖</div>
-            <div class="modal-question">Anda ingin bergabung sebagai?</div>
+            <div class="modal-question">Silakan lanjutkan ke pendaftaran peserta Tatung.</div>
 
             <div class="modal-grid">
                 <article class="modal-choice red">
@@ -1758,19 +1749,6 @@
                     </div>
                 </article>
 
-                <article class="modal-choice gold">
-                    <figure class="modal-choice-media">
-                        <img src="{{ asset('images/registration-panitia.png') }}" alt="Daftar sebagai panitia dan relawan">
-                    </figure>
-                    <div class="modal-choice-body">
-                        <div class="modal-choice-header">
-                            <div class="modal-badge">🤝</div>
-                            <h3 class="modal-choice-title">Daftar sebagai PANITIA & RELAWAN</h3>
-                        </div>
-                        <p>Bantu sukseskan acara dan jadi bagian dari tim hebat kami.</p>
-                        <a href="{{ route('pendaftaran.panitia') }}" class="btn btn-secondary modal-action" data-modal-close>Daftar Sekarang</a>
-                    </div>
-                </article>
             </div>
 
             <div class="modal-footer">
@@ -1989,7 +1967,7 @@
                                         <li>{{ $point }}</li>
                                     @endforeach
                                 </ul>
-                                <a href="{{ $card['accent'] === 'blue' ? route('pendaftaran.panitia') : route('pendaftaran.tatung') }}" class="btn btn-primary">{{ $card['button'] }}</a>
+                                <a href="{{ route('pendaftaran.tatung') }}" class="btn btn-primary">{{ $card['button'] }}</a>
                             </div>
                             @if ($card['accent'] === 'blue')
                                 <figure class="register-media">
@@ -2125,7 +2103,6 @@
                         <h5>Quick Link</h5>
                         <ul>
                             <li><a href="{{ route('pendaftaran.tatung') }}">Pendaftaran Tatung</a></li>
-                            <li><a href="{{ route('pendaftaran.panitia') }}">Pendaftaran Panitia</a></li>
                             <li><a href="#acara">Rute Pawai</a></li>
                             <li><a href="#tentang">FAQ</a></li>
                         </ul>
