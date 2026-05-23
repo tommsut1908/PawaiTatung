@@ -280,6 +280,26 @@
             line-height: 1.7;
         }
 
+        .alert-success,
+        .alert-error {
+            padding: 0.9rem 1rem;
+            border-radius: 16px;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
+        .alert-success {
+            border: 1px solid rgba(36, 132, 56, 0.2);
+            background: rgba(233, 248, 237, 0.95);
+            color: #165a2c;
+        }
+
+        .alert-error {
+            border: 1px solid rgba(167, 25, 23, 0.2);
+            background: rgba(252, 235, 235, 0.95);
+            color: #8f1d19;
+        }
+
         .steps {
             display: grid;
             grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -773,23 +793,41 @@
                         <hr>
                     </div>
 
+                    @if (session('success'))
+                        <div class="alert-success" style="margin: 0 1rem 1rem;">
+                            {{ session('success') }}
+                        </div>
+                    @endif
+
+                    @if ($errors->any())
+                        <div class="alert-error" style="margin: 0 1rem 1rem;">
+                            <strong>Periksa kembali isian Anda:</strong>
+                            <ul style="margin: 0.5rem 0 0; padding-left: 1.2rem;">
+                                @foreach ($errors->all() as $error)
+                                    <li>{{ $error }}</li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
                     <div class="form-layout">
                         <div class="form-card">
                             <div class="form-title">Informasi Penanggung Jawab</div>
                             <p class="form-subtitle">Data ini dipakai untuk menghubungi pihak cetya, vihara, atau kelenteng.</p>
-                            <form>
+                            <form id="tatungRegistrationForm" action="{{ route('pendaftaran.tatung.submit') }}" method="POST" enctype="multipart/form-data">
+                                @csrf
                                 <div class="form-grid">
                                     <div class="field">
-                                        <label>Nama Cetya/Vihara/Kelenteng *</label>
-                                        <input type="text" placeholder="Masukkan nama cetya / vihara / kelenteng" required>
+                                        <label for="nama_cetya_vihara_kelenteng">Nama Cetya/Vihara/Kelenteng *</label>
+                                        <input type="text" id="nama_cetya_vihara_kelenteng" name="nama_cetya_vihara_kelenteng" value="{{ old('nama_cetya_vihara_kelenteng') }}" placeholder="Masukkan nama cetya / vihara / kelenteng" required>
                                     </div>
                                     <div class="field">
-                                        <label>Penanggung Jawab *</label>
-                                        <input type="text" placeholder="Masukkan nama penanggung jawab" required>
+                                        <label for="penanggung_jawab">Penanggung Jawab *</label>
+                                        <input type="text" id="penanggung_jawab" name="penanggung_jawab" value="{{ old('penanggung_jawab') }}" placeholder="Masukkan nama penanggung jawab" required>
                                     </div>
                                     <div class="field">
-                                        <label>No Kontak Penanggung Jawab *</label>
-                                        <input type="text" placeholder="Contoh: 08xxxxxxxxxx" required>
+                                        <label for="no_kontak_penanggung_jawab">No Kontak Penanggung Jawab *</label>
+                                        <input type="text" id="no_kontak_penanggung_jawab" name="no_kontak_penanggung_jawab" value="{{ old('no_kontak_penanggung_jawab') }}" placeholder="Contoh: 08xxxxxxxxxx" required>
                                     </div>
                                 </div>
 
@@ -818,9 +856,11 @@
                                     </table>
                                 </div>
 
+                                <div id="jenisPawaiEntries" style="display: none;"></div>
+
                                 <div class="form-actions">
                                     <a href="{{ url('/') }}" class="btn btn-secondary">Kembali</a>
-                                    <button type="button" class="btn btn-primary">Kirim Pendaftaran</button>
+                                    <button type="submit" class="btn btn-primary">Kirim Pendaftaran</button>
                                 </div>
                             </form>
                         </div>
@@ -921,10 +961,14 @@
             const form = document.getElementById('typeForm');
             const typeTableBody = document.getElementById('typeTableBody');
             const emptyRow = document.getElementById('typeEmptyRow');
+            const jenisPawaiEntries = document.getElementById('jenisPawaiEntries');
+            const mainForm = document.getElementById('tatungRegistrationForm');
             const tatungFieldTemplate = document.getElementById('tatungFieldTemplate');
             const simpleFieldTemplate = document.getElementById('simpleFieldTemplate');
             let currentType = null;
             let currentFields = [];
+            let typeEntries = [];
+            let entrySequence = 0;
 
             function openModal() {
                 if (!modal) return;
@@ -992,37 +1036,132 @@
                 return field.value.trim();
             }
 
-            function appendRow(type) {
+            function getFileInput() {
+                return currentFields.find(function (el) {
+                    return el.getAttribute('name') === 'foto';
+                }) || null;
+            }
+
+            function createRow(entry) {
+                const row = document.createElement('tr');
+                row.dataset.entryId = entry.entryId;
+                const dataText = entry.type === 'Tatung'
+                    ? [
+                        `Nama Dewa: ${entry.data.nama_dewa || '-'}`,
+                        `Nama Tatung: ${entry.data.nama_tatung || '-'}`
+                    ].join('<br>')
+                    : `Nama: ${entry.data.nama || '-'}`;
+
+                row.innerHTML = `
+                    <td><strong>${entry.type}</strong></td>
+                    <td>${dataText}</td>
+                    <td>${entry.foto || '-'}</td>
+                    <td><button type="button" class="btn btn-secondary" data-remove-row="true">Hapus</button></td>
+                `;
+
+                row.querySelector('[data-remove-row="true"]').addEventListener('click', function () {
+                    removeEntry(entry.entryId);
+                });
+
+                return row;
+            }
+
+            function removeEntry(entryId) {
+                typeEntries = typeEntries.filter(function (item) {
+                    return item.entryId !== entryId;
+                });
+
+                const block = jenisPawaiEntries ? jenisPawaiEntries.querySelector('[data-entry-id="' + entryId + '"]') : null;
+                if (block) {
+                    block.remove();
+                }
+
+                const row = typeTableBody ? typeTableBody.querySelector('tr[data-entry-id="' + entryId + '"]') : null;
+                if (row) {
+                    row.remove();
+                }
+
+                if (typeTableBody && !typeTableBody.children.length) {
+                    typeTableBody.innerHTML = '<tr id="typeEmptyRow"><td colspan="4" class="table-empty">Belum ada jenis pawai. Klik <strong>Tambah Jenis Pawai</strong> untuk menambah data.</td></tr>';
+                }
+            }
+
+            function appendHiddenEntry(entry) {
+                if (!mainForm || !jenisPawaiEntries) return;
+
+                const block = document.createElement('div');
+                block.dataset.entryId = entry.entryId;
+
+                const inputs = [
+                    { name: 'jenis_pawai[' + entry.entryId + '][type]', value: entry.type },
+                ];
+
+                if (entry.type === 'Tatung') {
+                    inputs.push(
+                        { name: 'jenis_pawai[' + entry.entryId + '][nama_dewa]', value: entry.data.nama_dewa || '' },
+                        { name: 'jenis_pawai[' + entry.entryId + '][nama_tatung]', value: entry.data.nama_tatung || '' }
+                    );
+                } else {
+                    inputs.push(
+                        { name: 'jenis_pawai[' + entry.entryId + '][nama]', value: entry.data.nama || '' }
+                    );
+                }
+
+                inputs.forEach(function (item) {
+                    const input = document.createElement('input');
+                    input.type = 'hidden';
+                    input.name = item.name;
+                    input.value = item.value;
+                    block.appendChild(input);
+                });
+
+                if (entry.fileInput) {
+                    entry.fileInput.name = 'jenis_pawai[' + entry.entryId + '][foto]';
+                    block.appendChild(entry.fileInput);
+                }
+
+                jenisPawaiEntries.appendChild(block);
+            }
+
+            async function appendRow(type) {
                 if (!typeTableBody) return;
 
                 if (emptyRow && emptyRow.parentNode) {
                     emptyRow.remove();
                 }
 
-                const row = document.createElement('tr');
-                const dataText = type === 'Tatung'
-                    ? [
-                        `Nama Dewa: ${getFieldValue('nama_dewa') || '-'}`,
-                        `Nama Tatung: ${getFieldValue('nama_tatung') || '-'}`
-                    ].join('<br>')
-                    : `Nama: ${getFieldValue('nama') || '-'}`;
-                const fileText = getFieldValue('foto');
+                const fileInput = getFileInput();
+                const file = fileInput && fileInput.files && fileInput.files[0] ? fileInput.files[0] : null;
+                if (!file) {
+                    window.alert('Unggah foto peserta Tatung terlebih dahulu.');
+                    return;
+                }
 
-                row.innerHTML = `
-                    <td><strong>${type}</strong></td>
-                    <td>${dataText}</td>
-                    <td>${fileText}</td>
-                    <td><button type="button" class="btn btn-secondary" data-remove-row="true">Hapus</button></td>
-                `;
+                const maxBytes = 5 * 1024 * 1024;
+                if (file.size > maxBytes) {
+                    window.alert('Ukuran foto maksimal 5 MB.');
+                    return;
+                }
 
-                row.querySelector('[data-remove-row="true"]').addEventListener('click', function () {
-                    row.remove();
-                    if (!typeTableBody.children.length) {
-                        typeTableBody.innerHTML = '<tr id="typeEmptyRow"><td colspan="4" class="table-empty">Belum ada jenis pawai. Klik <strong>Tambah Jenis Pawai</strong> untuk menambah data.</td></tr>';
-                    }
-                });
+                const entryId = 'entry_' + Date.now() + '_' + (entrySequence++);
+                const entry = {
+                    entryId: entryId,
+                    type: type,
+                    data: type === 'Tatung'
+                        ? {
+                            nama_dewa: getFieldValue('nama_dewa') || '',
+                            nama_tatung: getFieldValue('nama_tatung') || '',
+                        }
+                        : {
+                            nama: getFieldValue('nama') || '',
+                        },
+                    foto: getFieldValue('foto') || '',
+                    fileInput: fileInput,
+                };
 
-                typeTableBody.appendChild(row);
+                typeEntries.push(entry);
+                appendHiddenEntry(entry);
+                typeTableBody.appendChild(createRow(entry));
             }
 
             if (openBtn) openBtn.addEventListener('click', openModal);
@@ -1043,10 +1182,10 @@
             });
 
             if (form) {
-                form.addEventListener('submit', function (event) {
+                form.addEventListener('submit', async function (event) {
                     event.preventDefault();
                     if (!currentType) return;
-                    appendRow(currentType);
+                    await appendRow(currentType);
                     closeModal();
                 });
             }

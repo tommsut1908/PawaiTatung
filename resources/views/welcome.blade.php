@@ -37,7 +37,7 @@
         [
             'title' => 'Atraksi Barongsai',
             'text' => 'Aksi penuh warna yang menghidupkan suasana sepanjang jalur pawai.',
-            'image' => asset('images/registration-tatung.png'),
+            'image' => asset('images/atraksi-barongsai.png'),
         ],
         [
             'title' => 'Ritual Spiritual',
@@ -47,17 +47,17 @@
         [
             'title' => 'Atraksi Budaya',
             'text' => 'Perpaduan seni, gerak, dan kostum yang memikat mata.',
-            'image' => asset('images/about-tatung.png'),
+            'image' => asset('images/atraksi-budaya.png'),
         ],
         [
             'title' => 'Doa Bersama',
             'text' => 'Momen hening yang menegaskan kebersamaan dan harapan baik.',
-            'image' => asset('images/contact-bridge.png'),
+            'image' => asset('images/doa-bersama.png'),
         ],
         [
             'title' => 'Pesta Kembang Api',
             'text' => 'Penutup malam yang menambah kemegahan suasana pawai.',
-            'image' => asset('images/hero-banner.png'),
+            'image' => asset('images/pesta-kembang-api.png'),
         ],
     ];
 

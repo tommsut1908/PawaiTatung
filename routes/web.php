@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PendaftaranTatungController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +21,5 @@ Route::get('/', function () {
 Route::get('/pendaftaran/tatung', function () {
     return view('register-tatung');
 })->name('pendaftaran.tatung');
+
+Route::post('/pendaftaran/tatung', [PendaftaranTatungController::class, 'store'])->name('pendaftaran.tatung.submit');
