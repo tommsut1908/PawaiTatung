@@ -769,7 +769,7 @@
                     <span class="hero-kicker">Pendaftaran Peserta</span>
                     <h2>Peserta Tatung</h2>
                     <p>Bergabunglah dalam prosesi sakral Pawai Tatung Jilid 3 Batam, Kepulauan Riau.</p>
-                    <div class="hero-badge">Pendaftaran Dibuka - Batas akhir: 30 Mei 2026</div>
+                    <div class="hero-badge">Pendaftaran Dibuka - Batas akhir: 15 Juni 2026</div>
                 </div>
             </section>
 

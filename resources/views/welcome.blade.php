@@ -2107,9 +2107,8 @@
                         <h5>Informasi</h5>
                         <ul>
                             <li><span>27 September 2026</span></li>
-                            <li><span>Nagoya - Batu Aji, Batam</span></li>
-                            <li><span>info@pawaitatung.co.id</span></li>
-                            <li><span>+62 812 3456 7890</span></li>
+                            <li><span>Batam - Kepulauan Riau</span></li>
+                            <li><span>pawaitatungbatamkepri@gmail.com</span></li>
                         </ul>
                     </div>
 
