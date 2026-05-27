@@ -103,6 +103,19 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500;600;700&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <link rel="icon" href="https://i0.wp.com/magabutri.or.id/wp-content/uploads/2025/06/Logo-Magabutri.png?fit=32%2C28&amp;ssl=1" sizes="32x32">
+    <link rel="icon" href="https://i0.wp.com/magabutri.or.id/wp-content/uploads/2025/06/Logo-Magabutri.png?fit=192%2C169&amp;ssl=1" sizes="192x192">
+
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="Pawai Tatung">
+    <meta property="og:description" content="Pawai Tatung diselenggarakan oleh Magabutri">
+    <meta property="og:url" content="https://pawai-tatung.magabutri.or.id/">
+    <meta property="og:site_name" content="Pawai Tatung">
+    <meta property="og:image" content="https://i0.wp.com/magabutri.or.id/wp-content/uploads/2025/06/Logo-Magabutri.png?fit=1920%2C1689&amp;ssl=1">
+    <meta property="og:image:width" content="1920">
+    <meta property="og:image:height" content="1689">
+    <meta property="og:image:alt" content="">
     <style>
         :root {
             --bg: #f8f2e6;
@@ -1761,8 +1774,8 @@
     <div class="container">
         <header class="topbar" id="beranda">
             <a href="#beranda" class="brand" aria-label="Pawai Tatung Batam Kepri">
-                <span class="brand-mark">PT</span>
-                <span class="brand-text">
+                <img src="{{ asset('images/logo.webp') }}" alt="Magabutri" style="width:100px">
+                <span class="brand-text" style="margin:auto">
                     <h1>Pawai Tatung</h1>
                     <p>BATAM - KEPRI</p>
                 </span>
@@ -1791,6 +1804,7 @@
                         <div class="hero-actions">
                             <a href="{{ route('pendaftaran.tatung') }}" class="btn btn-primary">Daftar Peserta</a>
                             <a href="#tentang" class="btn btn-secondary">Tentang Pawai</a>
+                            <a href="https://magabutri.or.id/" class="btn btn-secondary">Tentang Magabutri</a>
                         </div>
                     </div>
 
