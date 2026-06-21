@@ -950,7 +950,7 @@
                     if (entry.foto_path) {
                         const img = document.createElement('img');
                         img.className = 'entry-foto';
-                        img.src = '/storage/' + entry.foto_path;
+                        img.src = '/public/storage/' + entry.foto_path;
                         img.alt = 'Foto ' + entry.type;
                         img.onclick = function() {
                             openLightbox(img.src);
