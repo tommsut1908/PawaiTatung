@@ -704,6 +704,7 @@
         }
 
         @media (max-width: 760px) {
+            .benefits-section { display: none; }
             .container { width: min(100% - 1rem, 1240px); }
             .topbar { flex-direction: column; align-items: flex-start; }
             .hero {
@@ -773,7 +774,7 @@
                 </div>
             </section>
 
-            <section class="section">
+            <section class="section benefits-section">
                 <div class="info-grid">
                     @foreach ($benefits as $benefit)
                         <article class="info-card">
