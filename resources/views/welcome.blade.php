@@ -8,6 +8,7 @@
         ['label' => 'Tentang', 'href' => '#tentang'],
         ['label' => 'Rangkaian Acara', 'href' => '#acara'],
         ['label' => 'Pendaftaran', 'href' => '#daftar'],
+        ['label' => 'Peserta', 'href' => url('/peserta')],
         ['label' => 'Galeri', 'href' => '#galeri'],
         ['label' => 'Sponsor', 'href' => '#sponsor'],
         ['label' => 'Kontak', 'href' => '#kontak'],
@@ -2130,6 +2131,7 @@
         </footer>
     </div>
 </div>
+
 <script>
     (function () {
         const modal = document.getElementById('welcomeModal');
