@@ -60,6 +60,8 @@ Route::get('/peserta', function (Illuminate\Http\Request $request) {
             }
 
             $participants[] = [
+                'id' => $tatung->id,
+                'index' => $index,
                 'type' => $type,
                 'name' => $name,
                 'deity_name' => $deityName,
@@ -87,4 +89,75 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::middleware(['auth'])->group(function () {
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::post('/dashboard/status', [DashboardController::class, 'updateStatus'])->name('dashboard.status');
+    
+    // Update participant details
+    Route::post('/peserta/update', function (Illuminate\Http\Request $request) {
+        $id = $request->input('id');
+        $index = $request->input('index');
+        
+        $tatung = PendaftaranTatung::findOrFail($id);
+        $entries = $tatung->jenis_pawai_json ?? [];
+        
+        if (!isset($entries[$index])) {
+            return back()->with('error', 'Peserta tidak ditemukan.');
+        }
+        
+        // Update parent Vihara and PIC details
+        $tatung->nama_cetya_vihara_kelenteng = $request->input('vihara');
+        $tatung->penanggung_jawab = $request->input('penanggung_jawab');
+        $tatung->no_kontak_penanggung_jawab = $request->input('no_kontak');
+        $tatung->save();
+        
+        // Update entry details
+        $type = $request->input('type');
+        $entries[$index]['type'] = $type;
+        
+        if ($type === 'Tatung') {
+            $entries[$index]['data']['nama_tatung'] = $request->input('name');
+            $entries[$index]['data']['nama_dewa'] = $request->input('deity_name');
+            if (isset($entries[$index]['data']['nama'])) {
+                unset($entries[$index]['data']['nama']);
+            }
+        } else {
+            $entries[$index]['data']['nama'] = $request->input('name');
+            if (isset($entries[$index]['data']['nama_tatung'])) {
+                unset($entries[$index]['data']['nama_tatung']);
+            }
+            if (isset($entries[$index]['data']['nama_dewa'])) {
+                unset($entries[$index]['data']['nama_dewa']);
+            }
+        }
+        
+        // Handle photo upload if present
+        if ($request->hasFile('foto')) {
+            $path = $request->file('foto')->store('foto_peserta', 'public');
+            $entries[$index]['foto_path'] = $path;
+        }
+        
+        $tatung->jenis_pawai_json = $entries;
+        $tatung->save();
+        
+        return back()->with('success', 'Data peserta berhasil diperbarui.');
+    })->name('peserta.update');
+
+    // Delete participant
+    Route::post('/peserta/delete', function (Illuminate\Http\Request $request) {
+        $id = $request->input('id');
+        $index = $request->input('index');
+        
+        $tatung = PendaftaranTatung::findOrFail($id);
+        $entries = $tatung->jenis_pawai_json ?? [];
+        
+        if (!isset($entries[$index])) {
+            return back()->with('error', 'Peserta tidak ditemukan.');
+        }
+        
+        // Remove the entry from the array
+        array_splice($entries, $index, 1);
+        
+        $tatung->jenis_pawai_json = $entries;
+        $tatung->save();
+        
+        return back()->with('success', 'Peserta berhasil dihapus.');
+    })->name('peserta.delete');
 });

@@ -881,6 +881,71 @@
         </div>
     </div>
 
+    <!-- EDIT ENTRY MODAL -->
+    <div id="entryEditModal" class="modal-backdrop" style="z-index: 110;">
+        <div class="modal-card" style="width: min(500px, 100%);">
+            <div class="modal-header">
+                <div>
+                    <h3 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: #8f5516;">Edit Data Peserta</h3>
+                    <p style="margin: 0.2rem 0 0; font-size: 0.88rem; color: var(--muted);">Perbarui informasi peserta pawai.</p>
+                </div>
+                <button type="button" class="modal-close-btn" onclick="closeEntryEditModal()">&times;</button>
+            </div>
+            
+            <form action="{{ route('peserta.update') }}" method="POST" enctype="multipart/form-data">
+                @csrf
+                <input type="hidden" name="id" id="editId">
+                <input type="hidden" name="index" id="editIndex">
+                
+                <div class="modal-body" style="display: flex; flex-direction: column; gap: 1rem; padding: 1.5rem;">
+                    <div>
+                        <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #8f5516; margin-bottom: 0.3rem;">Nama Cetya/Vihara/Kelenteng</label>
+                        <input type="text" name="vihara" id="editVihara" class="search-input" style="width: 100%;" required>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #8f5516; margin-bottom: 0.3rem;">Nama Penanggung Jawab</label>
+                        <input type="text" name="penanggung_jawab" id="editPenanggungJawab" class="search-input" style="width: 100%;" required>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #8f5516; margin-bottom: 0.3rem;">No. Kontak Penanggung Jawab</label>
+                        <input type="text" name="no_kontak" id="editKontak" class="search-input" style="width: 100%;" required>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #8f5516; margin-bottom: 0.3rem;">Jenis Pawai</label>
+                        <select name="type" id="editType" class="search-input" style="width: 100%; height: 2.6rem; padding: 0.5rem 1rem; border: 1px solid rgba(193, 136, 46, 0.22); border-radius: 12px; font: inherit;" onchange="toggleEditDeityField(this.value)" required>
+                            <option value="Tatung">Tatung</option>
+                            <option value="Tandu">Tandu</option>
+                            <option value="Budaya">Budaya</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #8f5516; margin-bottom: 0.3rem;">Nama Peserta</label>
+                        <input type="text" name="name" id="editName" class="search-input" style="width: 100%;" required>
+                    </div>
+
+                    <div id="editDeityField">
+                        <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #8f5516; margin-bottom: 0.3rem;">Nama Dewa (Khusus Tatung)</label>
+                        <input type="text" name="deity_name" id="editDeityName" class="search-input" style="width: 100%;">
+                    </div>
+
+                    <div>
+                        <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #8f5516; margin-bottom: 0.3rem;">Foto Baru (Opsional)</label>
+                        <input type="file" name="foto" accept="image/*" class="search-input" style="width: 100%; padding: 0.4rem;">
+                    </div>
+                </div>
+
+                <div class="modal-footer" style="padding: 1rem 1.5rem; border-top: 1px solid rgba(195,140,58,0.12); display: flex; justify-content: flex-end; gap: 0.5rem;">
+                    <button type="button" class="btn btn-secondary" onclick="closeEntryEditModal()">Batal</button>
+                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- LIGHTBOX IMAGE PREVIEW -->
     <div id="lightbox" class="lightbox-backdrop" onclick="closeLightbox()">
         <button type="button" class="lightbox-close" onclick="closeLightbox()">&times;</button>
@@ -913,7 +978,7 @@
             if (entries.length === 0) {
                 entriesContainer.innerHTML = '<p class="muted" style="text-align:center;">Tidak ada data entri pawai.</p>';
             } else {
-                entries.forEach(entry => {
+                entries.forEach((entry, index) => {
                     const card = document.createElement('div');
                     card.className = 'entry-card';
 
@@ -958,6 +1023,46 @@
                         card.appendChild(img);
                     }
 
+                    // Action buttons
+                    const actionsDiv = document.createElement('div');
+                    actionsDiv.className = 'entry-actions';
+                    actionsDiv.style.display = 'flex';
+                    actionsDiv.style.flexDirection = 'column';
+                    actionsDiv.style.gap = '0.5rem';
+                    actionsDiv.style.marginLeft = '1rem';
+                    actionsDiv.style.alignSelf = 'center';
+
+                    const editBtn = document.createElement('button');
+                    editBtn.type = 'button';
+                    editBtn.className = 'btn btn-secondary btn-sm';
+                    editBtn.style.padding = '0.35rem 0.75rem';
+                    editBtn.style.fontSize = '0.8rem';
+                    editBtn.style.minHeight = '1.8rem';
+                    editBtn.textContent = 'Edit';
+                    editBtn.onclick = function() {
+                        openEntryEditModal(tatung.id, index, entry, tatung.nama_cetya_vihara_kelenteng, tatung.penanggung_jawab, tatung.no_kontak_penanggung_jawab);
+                    };
+
+                    const deleteForm = document.createElement('form');
+                    deleteForm.action = "{{ route('peserta.delete') }}";
+                    deleteForm.method = 'POST';
+                    deleteForm.style.margin = '0';
+                    deleteForm.onsubmit = function() {
+                        return confirm('Apakah Anda yakin ingin menghapus peserta ini dari daftar?');
+                    };
+
+                    const csrfToken = document.querySelector('input[name="_token"]').value;
+                    deleteForm.innerHTML = `
+                        <input type="hidden" name="_token" value="${csrfToken}">
+                        <input type="hidden" name="id" value="${tatung.id}">
+                        <input type="hidden" name="index" value="${index}">
+                        <button type="submit" class="btn btn-danger btn-sm" style="padding: 0.35rem 0.75rem; font-size: 0.8rem; min-height: 1.8rem; width: 100%;">Hapus</button>
+                    `;
+
+                    actionsDiv.appendChild(editBtn);
+                    actionsDiv.appendChild(deleteForm);
+                    card.appendChild(actionsDiv);
+
                     entriesContainer.appendChild(card);
                 });
             }
@@ -992,6 +1097,52 @@
             const lightbox = document.getElementById('lightbox');
             lightbox.classList.remove('is-open');
         }
+
+        function openEntryEditModal(id, index, entry, vihara, penanggungJawab, kontak) {
+            document.getElementById('editId').value = id;
+            document.getElementById('editIndex').value = index;
+            document.getElementById('editVihara').value = vihara;
+            document.getElementById('editPenanggungJawab').value = penanggungJawab;
+            document.getElementById('editKontak').value = kontak;
+            document.getElementById('editType').value = entry.type;
+            
+            if (entry.type === 'Tatung') {
+                document.getElementById('editName').value = entry.data.nama_tatung || '';
+                document.getElementById('editDeityName').value = entry.data.nama_dewa || '';
+            } else {
+                document.getElementById('editName').value = entry.data.nama || '';
+                document.getElementById('editDeityName').value = '';
+            }
+            
+            toggleEditDeityField(entry.type);
+
+            const modal = document.getElementById('entryEditModal');
+            modal.classList.add('is-open');
+        }
+
+        function closeEntryEditModal() {
+            const modal = document.getElementById('entryEditModal');
+            modal.classList.remove('is-open');
+        }
+
+        function toggleEditDeityField(type) {
+            const deityField = document.getElementById('editDeityField');
+            const deityInput = document.getElementById('editDeityName');
+            if (type === 'Tatung') {
+                deityField.style.display = 'block';
+                deityInput.required = true;
+            } else {
+                deityField.style.display = 'none';
+                deityInput.required = false;
+            }
+        }
+        
+        // Close modal when clicking outside the card
+        document.getElementById('entryEditModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeEntryEditModal();
+            }
+        });
     </script>
 </body>
 </html>
