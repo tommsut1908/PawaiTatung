@@ -160,4 +160,39 @@ Route::middleware(['auth'])->group(function () {
         
         return back()->with('success', 'Peserta berhasil dihapus.');
     })->name('peserta.delete');
+
+    // Add participant entry
+    Route::post('/peserta/add', function (Illuminate\Http\Request $request) {
+        $id = $request->input('id');
+        
+        $tatung = PendaftaranTatung::findOrFail($id);
+        $entries = $tatung->jenis_pawai_json ?? [];
+        
+        $type = $request->input('type');
+        $newEntry = [
+            'type' => $type,
+            'data' => []
+        ];
+        
+        if ($type === 'Tatung') {
+            $newEntry['data']['nama_tatung'] = $request->input('name');
+            $newEntry['data']['nama_dewa'] = $request->input('deity_name');
+        } else {
+            $newEntry['data']['nama'] = $request->input('name');
+        }
+        
+        // Handle photo upload if present
+        if ($request->hasFile('foto')) {
+            $path = $request->file('foto')->store('foto_peserta', 'public');
+            $newEntry['foto_path'] = $path;
+        } else {
+            $newEntry['foto_path'] = null;
+        }
+        
+        $entries[] = $newEntry;
+        $tatung->jenis_pawai_json = $entries;
+        $tatung->save();
+        
+        return back()->with('success', 'Berhasil menambahkan entri peserta pawai.');
+    })->name('peserta.add');
 });

@@ -867,9 +867,14 @@
                     </div>
                 </div>
 
-                <h4 style="margin: 1.5rem 0 0.85rem; font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: #8f5516; border-bottom: 1px solid rgba(195,140,58,0.1); padding-bottom: 0.5rem;">
-                    Daftar Jenis Pawai / Entry
-                </h4>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin: 1.5rem 0 0.85rem; border-bottom: 1px solid rgba(195,140,58,0.1); padding-bottom: 0.5rem;">
+                    <h4 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; color: #8f5516;">
+                        Daftar Jenis Pawai / Entry
+                    </h4>
+                    <button type="button" class="btn btn-secondary btn-sm" id="addEntryBtn">
+                        + Tambah Entry
+                    </button>
+                </div>
                 <div id="modalEntries" class="entries-list">
                     <!-- Entries will be dynamically populated here -->
                 </div>
@@ -883,7 +888,8 @@
 
     <!-- EDIT ENTRY MODAL -->
     <div id="entryEditModal" class="modal-backdrop" style="z-index: 110;">
-        <div class="modal-card" style="width: min(500px, 100%);">
+        <form action="{{ route('peserta.update') }}" method="POST" enctype="multipart/form-data" class="modal-card" style="width: min(500px, 100%);">
+            @csrf
             <div class="modal-header">
                 <div>
                     <h3 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: #8f5516;">Edit Data Peserta</h3>
@@ -892,58 +898,102 @@
                 <button type="button" class="modal-close-btn" onclick="closeEntryEditModal()">&times;</button>
             </div>
             
-            <form action="{{ route('peserta.update') }}" method="POST" enctype="multipart/form-data">
-                @csrf
-                <input type="hidden" name="id" id="editId">
-                <input type="hidden" name="index" id="editIndex">
-                
-                <div class="modal-body" style="display: flex; flex-direction: column; gap: 1rem; padding: 1.5rem;">
-                    <div>
-                        <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #8f5516; margin-bottom: 0.3rem;">Nama Cetya/Vihara/Kelenteng</label>
-                        <input type="text" name="vihara" id="editVihara" class="search-input" style="width: 100%;" required>
-                    </div>
-
-                    <div>
-                        <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #8f5516; margin-bottom: 0.3rem;">Nama Penanggung Jawab</label>
-                        <input type="text" name="penanggung_jawab" id="editPenanggungJawab" class="search-input" style="width: 100%;" required>
-                    </div>
-
-                    <div>
-                        <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #8f5516; margin-bottom: 0.3rem;">No. Kontak Penanggung Jawab</label>
-                        <input type="text" name="no_kontak" id="editKontak" class="search-input" style="width: 100%;" required>
-                    </div>
-
-                    <div>
-                        <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #8f5516; margin-bottom: 0.3rem;">Jenis Pawai</label>
-                        <select name="type" id="editType" class="search-input" style="width: 100%; height: 2.6rem; padding: 0.5rem 1rem; border: 1px solid rgba(193, 136, 46, 0.22); border-radius: 12px; font: inherit;" onchange="toggleEditDeityField(this.value)" required>
-                            <option value="Tatung">Tatung</option>
-                            <option value="Tandu">Tandu</option>
-                            <option value="Budaya">Budaya</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #8f5516; margin-bottom: 0.3rem;">Nama Peserta</label>
-                        <input type="text" name="name" id="editName" class="search-input" style="width: 100%;" required>
-                    </div>
-
-                    <div id="editDeityField">
-                        <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #8f5516; margin-bottom: 0.3rem;">Nama Dewa (Khusus Tatung)</label>
-                        <input type="text" name="deity_name" id="editDeityName" class="search-input" style="width: 100%;">
-                    </div>
-
-                    <div>
-                        <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #8f5516; margin-bottom: 0.3rem;">Foto Baru (Opsional)</label>
-                        <input type="file" name="foto" accept="image/*" class="search-input" style="width: 100%; padding: 0.4rem;">
-                    </div>
+            <input type="hidden" name="id" id="editId">
+            <input type="hidden" name="index" id="editIndex">
+            
+            <div class="modal-body" style="display: flex; flex-direction: column; gap: 1rem; padding: 1.5rem;">
+                <div>
+                    <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #8f5516; margin-bottom: 0.3rem;">Nama Cetya/Vihara/Kelenteng</label>
+                    <input type="text" name="vihara" id="editVihara" class="search-input" style="width: 100%;" required>
                 </div>
 
-                <div class="modal-footer" style="padding: 1rem 1.5rem; border-top: 1px solid rgba(195,140,58,0.12); display: flex; justify-content: flex-end; gap: 0.5rem;">
-                    <button type="button" class="btn btn-secondary" onclick="closeEntryEditModal()">Batal</button>
-                    <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+                <div>
+                    <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #8f5516; margin-bottom: 0.3rem;">Nama Penanggung Jawab</label>
+                    <input type="text" name="penanggung_jawab" id="editPenanggungJawab" class="search-input" style="width: 100%;" required>
                 </div>
-            </form>
-        </div>
+
+                <div>
+                    <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #8f5516; margin-bottom: 0.3rem;">No. Kontak Penanggung Jawab</label>
+                    <input type="text" name="no_kontak" id="editKontak" class="search-input" style="width: 100%;" required>
+                </div>
+
+                <div>
+                    <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #8f5516; margin-bottom: 0.3rem;">Jenis Pawai</label>
+                    <select name="type" id="editType" class="search-input" style="width: 100%; height: 2.6rem; padding: 0.5rem 1rem; border: 1px solid rgba(193, 136, 46, 0.22); border-radius: 12px; font: inherit;" onchange="toggleEditDeityField(this.value)" required>
+                        <option value="Tatung">Tatung</option>
+                        <option value="Tandu">Tandu</option>
+                        <option value="Budaya">Budaya</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #8f5516; margin-bottom: 0.3rem;">Nama Peserta</label>
+                    <input type="text" name="name" id="editName" class="search-input" style="width: 100%;" required>
+                </div>
+
+                <div id="editDeityField">
+                    <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #8f5516; margin-bottom: 0.3rem;">Nama Dewa (Khusus Tatung)</label>
+                    <input type="text" name="deity_name" id="editDeityName" class="search-input" style="width: 100%;">
+                </div>
+
+                <div>
+                    <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #8f5516; margin-bottom: 0.3rem;">Foto Baru (Opsional)</label>
+                    <input type="file" name="foto" accept="image/*" class="search-input" style="width: 100%; padding: 0.4rem;">
+                </div>
+            </div>
+
+            <div class="modal-footer" style="padding: 1rem 1.5rem; border-top: 1px solid rgba(195,140,58,0.12); display: flex; justify-content: flex-end; gap: 0.5rem; flex-shrink: 0;">
+                <button type="button" class="btn btn-secondary" onclick="closeEntryEditModal()">Batal</button>
+                <button type="submit" class="btn btn-primary">Simpan Perubahan</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- ADD ENTRY MODAL -->
+    <div id="entryAddModal" class="modal-backdrop" style="z-index: 110;">
+        <form action="{{ route('peserta.add') }}" method="POST" enctype="multipart/form-data" class="modal-card" style="width: min(500px, 100%);">
+            @csrf
+            <div class="modal-header">
+                <div>
+                    <h3 style="margin: 0; font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; color: #8f5516;">Tambah Entry Pawai</h3>
+                    <p style="margin: 0.2rem 0 0; font-size: 0.88rem; color: var(--muted);">Tambahkan peserta pawai baru ke vihara ini.</p>
+                </div>
+                <button type="button" class="modal-close-btn" onclick="closeEntryAddModal()">&times;</button>
+            </div>
+            
+            <input type="hidden" name="id" id="addParentId">
+            
+            <div class="modal-body" style="display: flex; flex-direction: column; gap: 1rem; padding: 1.5rem;">
+                <div>
+                    <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #8f5516; margin-bottom: 0.3rem;">Jenis Pawai</label>
+                    <select name="type" id="addType" class="search-input" style="width: 100%; height: 2.6rem; padding: 0.5rem 1rem; border: 1px solid rgba(193, 136, 46, 0.22); border-radius: 12px; font: inherit;" onchange="toggleAddDeityField(this.value)" required>
+                        <option value="Tatung">Tatung</option>
+                        <option value="Tandu">Tandu</option>
+                        <option value="Budaya">Budaya</option>
+                    </select>
+                </div>
+
+                <div>
+                    <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #8f5516; margin-bottom: 0.3rem;">Nama Peserta</label>
+                    <input type="text" name="name" id="addName" class="search-input" style="width: 100%;" placeholder="Masukkan nama peserta" required>
+                </div>
+
+                <div id="addDeityField">
+                    <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #8f5516; margin-bottom: 0.3rem;">Nama Dewa (Khusus Tatung)</label>
+                    <input type="text" name="deity_name" id="addDeityName" class="search-input" style="width: 100%;" placeholder="Masukkan nama dewa">
+                </div>
+
+                <div>
+                    <label style="display: block; font-size: 0.78rem; font-weight: 700; text-transform: uppercase; color: #8f5516; margin-bottom: 0.3rem;">Foto Peserta (Opsional)</label>
+                    <input type="file" name="foto" accept="image/*" class="search-input" style="width: 100%; padding: 0.4rem;">
+                </div>
+            </div>
+
+            <div class="modal-footer" style="padding: 1rem 1.5rem; border-top: 1px solid rgba(195,140,58,0.12); display: flex; justify-content: flex-end; gap: 0.5rem; flex-shrink: 0;">
+                <button type="button" class="btn btn-secondary" onclick="closeEntryAddModal()">Batal</button>
+                <button type="submit" class="btn btn-primary">Tambah</button>
+            </div>
+        </form>
     </div>
 
     <!-- LIGHTBOX IMAGE PREVIEW -->
@@ -1067,6 +1117,10 @@
                 });
             }
 
+            document.getElementById('addEntryBtn').onclick = function() {
+                openEntryAddModal(tatung.id);
+            };
+
             const modal = document.getElementById('tatungDetailModal');
             modal.classList.add('is-open');
             document.body.classList.add('modal-open');
@@ -1141,6 +1195,42 @@
         document.getElementById('entryEditModal').addEventListener('click', function(event) {
             if (event.target === this) {
                 closeEntryEditModal();
+            }
+        });
+
+        function openEntryAddModal(parentId) {
+            document.getElementById('addParentId').value = parentId;
+            document.getElementById('addType').value = 'Tatung';
+            document.getElementById('addName').value = '';
+            document.getElementById('addDeityName').value = '';
+            
+            toggleAddDeityField('Tatung');
+
+            const modal = document.getElementById('entryAddModal');
+            modal.classList.add('is-open');
+        }
+
+        function closeEntryAddModal() {
+            const modal = document.getElementById('entryAddModal');
+            modal.classList.remove('is-open');
+        }
+
+        function toggleAddDeityField(type) {
+            const deityField = document.getElementById('addDeityField');
+            const deityInput = document.getElementById('addDeityName');
+            if (type === 'Tatung') {
+                deityField.style.display = 'block';
+                deityInput.required = true;
+            } else {
+                deityField.style.display = 'none';
+                deityInput.required = false;
+            }
+        }
+        
+        // Close modal when clicking outside the card
+        document.getElementById('entryAddModal').addEventListener('click', function(event) {
+            if (event.target === this) {
+                closeEntryAddModal();
             }
         });
     </script>
